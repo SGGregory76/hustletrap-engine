@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🏚️ Safehouse – Cool Down</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #0a0a0a;
+      color: #ccc;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+    .box {
+      background: #181818;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 300px;
+      color: #66ccff;
+    }
+  </style>
+</head>
+<body>
+  <div class="box" id="message">Loading...</div>
+
+  <script src="https://yourusername.github.io/hustletrap-engine/scripts/flag-manager.js"></script>
+  <script src="https://yourusername.github.io/hustletrap-engine/scripts/stats-engine.js"></script>
+  <script src="https://yourusername.github.io/hustletrap-engine/scripts/log-manager.js"></script>
+  <script>
+    const FlagManager = window.FlagManager;
+    const StatsEngine = window.StatsEngine;
+    const LogManager = window.LogManager;
+
+    const cooldownKey = 'rest_cooldown';
+    const today = new Date().toLocaleDateString();
+    const message = document.getElementById('message');
+
+    if (FlagManager.get(cooldownKey) === today) {
+      message.innerHTML = 'You’ve already rested today.<br>Come back tomorrow.';
+    } else {
+      const stats = StatsEngine.get();
+      const originalHeat = stats.heat || 0;
+      const reduced = Math.min(2, originalHeat);
+      stats.heat = Math.max(0, originalHeat - reduced);
+      StatsEngine.set(stats);
+      FlagManager.set(cooldownKey, today);
+      LogManager.add(`Rested at Safehouse: -${reduced} Heat`);
+      message.innerHTML = `You rest and cool off.<br>🔥 -${reduced} Heat`;
+    }
+  </script>
+</body>
+</html>
