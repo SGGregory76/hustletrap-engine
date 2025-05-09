@@ -2,7 +2,7 @@
   if (window !== window.top) return; // Skip if inside iframe
 
   const pages = [
-    { name: "Missions", href: "https://hustle-trap.blogspot.com/p/missions.html?m=1" },
+    { name: "Missions", href: "https://hustle-trap.blogspot.com/p/missions_8.html?m=1" },
     { name: "Contacts", href: "https://hustle-trap.blogspot.com/p/contacts.html?m=1" },
     { name: "Inventory", href: "https://hustle-trap.blogspot.com/p/inventory_47.html?m=1" },
     { name: "Log", href: "https://hustle-trap.blogspot.com/p/log.html?m=1" }
