@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Burner OS – Hustle Trap v4.7</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%; height: 100%;
+      background: #000;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      margin: 0;
+    }
+    .phone {
+      width: 100%;
+      max-width: 340px;
+      background: #121212;
+      border: 2px solid #444;
+      border-radius: 24px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      height: 600px; /* adjusted realistic phone height */
+      overflow-y: auto;
+      margin-top: 0;
+    }
+    .phone-header {
+      background: #111;
+      padding: 12px;
+      text-align: center;
+      color: #66ccff;
+      font-weight: bold;
+      font-size: 18px;
+      border-bottom: 1px solid #333;
+      flex-shrink: 0;
+    }
+    .app-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 12px;
+      background: #181818;
+      flex-shrink: 0;
+    }
+    .app-icon {
+      background: #1f1f1f;
+      border: 1px solid #336699;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: center;
+      color: #66ccff;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .app-icon:hover {
+      background: #2c2c2c;
+      color: #fff;
+    }
+    .icon {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 4px;
+    }
+    .hud {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #111;
+      color: #66ccff;
+      font-size: 13px;
+      padding: 6px;
+      border-top: 1px solid #333;
+      border-bottom: 1px solid #333;
+      flex-shrink: 0;
+    }
+    .iframe-wrap {
+      position: relative;
+      flex-grow: 1;
+      overflow: hidden;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #0a0a0a;
+    }
+    #placeholder {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #888;
+      font-size: 14px;
+      text-align: center;
+      background: #0a0a0a;
+      transition: opacity 0.6s ease;
+    }
+    #placeholder.fadeout { opacity: 0; }
+    #spinner {
+      margin-top: 10px;
+      border: 2px solid #333;
+      border-top: 2px solid #ccc;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="phone">
+    <div class="phone-header">Hustle Trap</div>
+    <div class="app-grid">
+      <div class="app-icon" onclick="loadPage('https://hustle-trap.blogspot.com/p/missions_8.html?m=1')">
+        <span class="icon">📋</span><div>Missions</div>
+      </div>
+      <div class="app-icon" onclick="loadPage('https://hustle-trap.blogspot.com/p/contacts.html?m=1')">
+        <span class="icon">👥</span><div>Contacts</div>
+      </div>
+      <div class="app-icon" onclick="loadPage('https://hustle-trap.blogspot.com/p/inventory_47.html?m=1')">
+        <span class="icon">🎒</span><div>Inventory</div>
+      </div>
+      <div class="app-icon" onclick="loadPage('https://hustle-trap.blogspot.com/p/crafting.html?m=1')">
+        <span class="icon">⚗️</span><div>Crafting</div>
+      </div>
+      <div class="app-icon" onclick="loadPage('https://hustle-trap.blogspot.com/p/map.html?m=1')">
+        <span class="icon">🗺️</span><div>Map</div>
+      </div>
+      <div class="app-icon" onclick="loadPage('https://hustle-trap.blogspot.com/p/log.html?m=1')">
+        <span class="icon">🧾</span><div>Log</div>
+      </div>
+    </div>
+    <div class="hud">
+      <div>⭐ <span id="xp">0</span></div>
+      <div>📢 <span id="rep">0</span></div>
+      <div>🧪 <span id="rp">0</span></div>
+      <div>🔥 <span id="heat">0</span></div>
+      <div>💵 <span id="cash">0</span></div>
+    </div>
+    <div class="iframe-wrap">
+      <iframe id="appFrame" src=""></iframe>
+      <div id="placeholder">
+        Welcome to Burner OS<br>Tap an icon to begin.
+        <div id="spinner"></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    function loadPage(url) {
+      const frame = document.getElementById("appFrame");
+      const placeholder = document.getElementById("placeholder");
+      placeholder.classList.remove("fadeout");
+      placeholder.style.display = "flex";
+      frame.onload = () => {
+        placeholder.classList.add("fadeout");
+        setTimeout(() => { placeholder.style.display = "none"; }, 600);
+        // Scroll the entire document to bottom of page
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      };
+      frame.src = url;
+    }
+    (function initStats() {
+      const stats = JSON.parse(localStorage.getItem('playerStats') || '{}');
+      stats.xp ??= 0; stats.rep ??= 0; stats.rp ??= 0; stats.heat ??= 0; stats.cash ??= 0;
+      localStorage.setItem('playerStats', JSON.stringify(stats));
+      ['xp','rep','rp','heat','cash'].forEach(k => {
+        document.getElementById(k).textContent = k === 'cash' ? `$${stats[k]}` : stats[k];
+      });
+    })();
+  </script>
+  <script src="https://sggregory76.github.io/hustletrap-engine/scripts/flag-manager.js"></script>
+  <script src="https://sggregory76.github.io/hustletrap-engine/scripts/stats-engine.js"></script>
+  <script src="https://sggregory76.github.io/hustletrap-engine/scripts/log-manager.js"></script>
+</body>
+</html>
