@@ -1,6 +1,6 @@
 (function() {
-  // Only run inside the Burner OS iframe
-  if (window === window.top) return;
+  // Only run outside the Burner OS iframe
+  if (window !== window.top) return;
 
   const pages = [
     { name: "Missions", href: "https://hustle-trap.blogspot.com/p/missions.html?m=1" },
